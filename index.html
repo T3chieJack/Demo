@@ -64,42 +64,50 @@
   <button id="run-btn" disabled>Loading Pyodide...</button>
   <pre id="output">Loading Pyodide...</pre>
 
-  <script>
-    let pyodide;
+<script>
+  let pyodide;
+  let running = false;
 
-    async function main() {
-      pyodide = await loadPyodide();
-      document.getElementById("output").textContent = "✅ Pyodide loaded. Ready to run Python code.";
-      const btn = document.getElementById("run-btn");
-      btn.textContent = "Run";
-      btn.disabled = false;
-    }
+  async function main() {
+    pyodide = await loadPyodide();
+    document.getElementById("output").textContent =
+      "✅ Pyodide loaded. Ready to run Python code.";
+    const btn = document.getElementById("run-btn");
+    btn.textContent = "Run";
+    btn.disabled = false;
+  }
 
-    async function runCode() {
-      const code = document.getElementById("code").value;
-      const output = document.getElementById("output");
-      output.textContent = "Running...";
+  async function runCode() {
+    const code = document.getElementById("code").value;
+    const output = document.getElementById("output");
+    output.textContent = "Running...";
+    running = true;
 
-      try {
-        // Redirect Python print() output
-        let pythonCode = `
-import io, sys
+    try {
+      const wrapped = `
+import io, sys, asyncio
 sys.stdout = sys.stderr = io.StringIO()
+
+async def __main__():
+${code.split("\n").map(line => "    " + line).join("\n")}
+
 try:
-    exec("""${code.replace(/\\/g, "\\\\").replace(/`/g, "\\`")}""")
+    asyncio.run(__main__())
 except Exception as e:
     print(e)
+
 sys.stdout.getvalue()
 `;
-        let result = await pyodide.runPythonAsync(pythonCode);
-        output.textContent = result || "✅ Done (no output)";
-      } catch (err) {
-        output.textContent = "⚠️ Error:\n" + err;
-      }
+      const result = await pyodide.runPythonAsync(wrapped);
+      output.textContent = result || "✅ Done (no output)";
+    } catch (err) {
+      output.textContent = "⚠️ Error:\n" + err;
     }
+  }
 
-    document.getElementById("run-btn").addEventListener("click", runCode);
-    main();
-  </script>
+  document.getElementById("run-btn").addEventListener("click", runCode);
+  main();
+</script>
+
 </body>
 </html>
