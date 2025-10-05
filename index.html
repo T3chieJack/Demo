@@ -1,1 +1,68 @@
-<p>Demo</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Testing Ground</title>
+  <style>
+    body {
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #58a6ff;
+    }
+    p {
+      opacity: 0.8;
+      margin-bottom: 2rem;
+    }
+    #sandbox {
+      width: 80%;
+      height: 200px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 1rem;
+      color: #f0f6fc;
+      overflow: auto;
+    }
+    button {
+      background: #238636;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s ease;
+    }
+    button:hover {
+      background: #2ea043;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 Testing Ground</h1>
+  <p>This is your demo site for experiments and tests.</p>
+  <div id="sandbox">Console output will appear here...</div>
+  <br>
+  <button onclick="runTest()">Run Test</button>
+
+  <script>
+    function runTest() {
+      const box = document.getElementById('sandbox');
+      const now = new Date().toLocaleTimeString();
+      box.innerHTML += `Test run at ${now}<br>`;
+      box.scrollTop = box.scrollHeight;
+    }
+  </script>
+</body>
+</html>
